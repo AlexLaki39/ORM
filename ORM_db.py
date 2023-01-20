@@ -4,7 +4,7 @@ import json
 
 from models import create_tables, Publisher, Shop, Book, Stock, Sale
 
-# DSN = '...'
+# DSN = ' '
 engine = sq.create_engine(DSN)
 
 create_tables(engine)
@@ -29,14 +29,16 @@ session.commit()
 
 def get_info_buying_books(publisher_name):
     if publisher_name.isnumeric():
-        for i in session.query(Book.title, Shop.name, Stock.count).\
+        for i in session.query(Book.title, Shop.name, (Sale.count*Sale.price),
+                               Sale.date_sale).\
                 join(Stock.shops).join(Stock.books).join(Book.publishers).\
-                filter(Publisher.id == int(publisher_name)):
+                join(Stock.sales).filter(Publisher.id == int(publisher_name)):
             print(i)
     else:
-        for i in session.query(Book.title, Shop.name, Stock.count).\
+        for i in session.query(Book.title, Shop.name, (Sale.count*Sale.price),
+                               Sale.date_sale).\
                 join(Stock.shops).join(Stock.books).join(Book.publishers).\
-                filter(Publisher.name.like(f'{publisher_name}')):
+                join(Stock.sales).filter(Publisher.name.like(publisher_name)):
             print(i)
 
 session.close()

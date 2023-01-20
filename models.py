@@ -34,6 +34,15 @@ class Shop(Base):
         return f'Магазин: id{self.id}, name {self.name}'
 
 
+class Sale(Base):
+    __tablename__ = 'sale'
+
+    id = sq.Column(sq.Integer, primary_key=True)
+    price = sq.Column(sq.FLOAT, nullable=False)
+    date_sale = sq.Column(sq.String, nullable=False)
+    id_stock = sq.Column(sq.Integer, sq.ForeignKey('stock.id'), nullable=False)
+    count = sq.Column(sq.Integer)
+
 class Stock(Base):
     __tablename__ = 'stock'
 
@@ -44,18 +53,7 @@ class Stock(Base):
 
     books = relationship(Book, backref='stock')
     shops = relationship(Shop, backref='stock')
-
-
-class Sale(Base):
-    __tablename__ = 'sale'
-
-    id = sq.Column(sq.Integer, primary_key=True)
-    price = sq.Column(sq.FLOAT, nullable=False)
-    date_sale = sq.Column(sq.String, nullable=False)
-    id_stock = sq.Column(sq.Integer, sq.ForeignKey('stock.id'), nullable=False)
-    count = sq.Column(sq.Integer)
-
-    stocks = relationship(Stock, backref='sale')
+    sales = relationship(Sale, backref='stock')
 
 
 def create_tables(engine):
